@@ -1,4 +1,0 @@
-"0","zone_st %>%"
-"0","  mutate(zone=ifelse(cluster_s==""1"", ""low"", ""high"")) %>%"
-"0","  write_sf(""../data/Rojas_zone_st.geojson"","
-"0","           delete_dsn = T) "

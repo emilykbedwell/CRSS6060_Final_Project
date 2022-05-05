@@ -1,7 +1,0 @@
-"0","# Voting from 26 indices  "
-"0","bestk <- NbClust(all_v_n,"
-"0","                 distance = ""euclidean"", "
-"0","                 method =""kmeans"", "
-"0","                 index= ""all"","
-"0","                 min.nc = 2, "
-"0","                 max.nc = 6)"

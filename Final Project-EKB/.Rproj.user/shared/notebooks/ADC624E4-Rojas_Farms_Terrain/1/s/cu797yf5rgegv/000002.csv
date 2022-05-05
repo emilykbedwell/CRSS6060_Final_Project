@@ -1,6 +1,0 @@
-"0","ggplot()+"
-"0","  geom_sf(data = elev_w,"
-"0","          aes(color=elev_m), size=.01)+"
-"0","  scale_fill_gradient(low=""black"", high=""white"")+"
-"0","  mytheme_map"
-"0",""

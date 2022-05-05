@@ -1,4 +1,0 @@
-"0","idw_pred_v %>%"
-"0","  ggplot(aes(x=ipyield_lbac))+"
-"0","  geom_density()"
-"0",""

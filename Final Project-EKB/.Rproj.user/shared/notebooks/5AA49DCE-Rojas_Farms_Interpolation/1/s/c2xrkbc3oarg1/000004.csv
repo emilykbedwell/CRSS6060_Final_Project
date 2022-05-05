@@ -1,5 +1,0 @@
-"0","ggplot()+"
-"0","  geom_sf(data = idw_pred_v,"
-"0","          aes(color=ipyield_lbac))+"
-"0","  scale_color_viridis()"
-"0",""

@@ -1,4 +1,0 @@
-"0","ggplot(data=yield16_w, aes(x=yield_lbac))+"
-"0","  geom_density()+"
-"0","  geom_rug()"
-"0",""

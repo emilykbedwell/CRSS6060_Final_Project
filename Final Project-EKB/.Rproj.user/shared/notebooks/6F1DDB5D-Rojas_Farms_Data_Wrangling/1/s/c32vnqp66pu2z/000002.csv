@@ -1,5 +1,0 @@
-"0","yieldmap_clean <- ggplot(yield16_w_pf)+"
-"0","  geom_sf(aes(color=yield_lbac), size=.1)+"
-"0","  scale_color_viridis()"
-"0",""
-"0","yieldmap_clean"

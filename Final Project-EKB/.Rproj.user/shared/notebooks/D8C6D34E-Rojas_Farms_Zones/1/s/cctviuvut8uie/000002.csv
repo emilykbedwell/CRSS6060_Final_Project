@@ -1,6 +1,0 @@
-"0","# Silhouette width"
-"0","fviz_nbclust(all_v_n, "
-"0","             method = ""s"","
-"0","             k.max = 10,"
-"0","             FUNcluster = kmeans) #2"
-"0",""

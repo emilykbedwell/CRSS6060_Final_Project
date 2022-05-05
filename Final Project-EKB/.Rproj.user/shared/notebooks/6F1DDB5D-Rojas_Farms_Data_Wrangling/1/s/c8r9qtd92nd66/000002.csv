@@ -1,4 +1,0 @@
-"0","ggplot(filter(yield16, DryYield<5000) , aes(x=Long,"
-"0","                                             y=Lat))+"
-"0","  geom_point(aes(color=DryYield))+"
-"0","  scale_color_viridis()"

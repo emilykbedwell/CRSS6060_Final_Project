@@ -1,4 +1,0 @@
-"0","vrn_v %>%"
-"0","  dplyr::select(zone, uanrate_galac) %>%"
-"0","  write_sf(""../output/VRN/Rojas_vrn.geojson"","
-"0","           delete_dsn = T)"

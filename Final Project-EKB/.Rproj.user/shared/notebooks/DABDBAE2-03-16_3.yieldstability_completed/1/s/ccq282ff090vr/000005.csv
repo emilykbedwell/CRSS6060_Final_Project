@@ -1,5 +1,0 @@
-"0","ggplot()+"
-"0","  geom_sf(data = st_all,"
-"0","          aes(fill=stnyield), color=NA)+"
-"0","    scale_fill_viridis_d(option=""C"")+"
-"0","  theme_map()"

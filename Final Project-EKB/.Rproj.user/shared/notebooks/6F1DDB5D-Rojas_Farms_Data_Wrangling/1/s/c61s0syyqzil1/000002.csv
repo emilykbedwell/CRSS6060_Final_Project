@@ -1,6 +1,0 @@
-"0","ggplot(yield16, aes(x=speed_mph))+"
-"0","  geom_density()+"
-"0","  geom_rug()"
-"2","Warning:"
-"2"," Removed 165 rows containing non-finite values (stat_density).
-"

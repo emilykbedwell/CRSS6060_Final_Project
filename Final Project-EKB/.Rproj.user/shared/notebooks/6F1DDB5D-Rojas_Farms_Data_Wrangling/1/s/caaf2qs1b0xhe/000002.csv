@@ -1,3 +1,0 @@
-"0","ggplot(yield16, aes(x=DryYield))+"
-"0","  geom_density()+"
-"0","  geom_rug()"

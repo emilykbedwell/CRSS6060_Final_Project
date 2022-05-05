@@ -1,0 +1,12 @@
+"0","elev <- read_csv(""../data/Deer Run1 Elevation.csv"")"
+"1","[1mRows: [22m[34m19589[39m [1mColumns: [22m[34m3[39m
+"
+"1","[36m--[39m [1mColumn specification[22m [36m-----------------------------------------------------------------------------------------------------------------[39m
+[1mDelimiter:[22m "",""
+[32mdbl[39m (3): Longitude, Latitude, Elevation
+"
+"1","
+[36mi[39m Use [38;5;251m[48;5;235m[38;5;251m[48;5;235m`spec()`[48;5;235m[38;5;251m[49m[39m to retrieve the full column specification for this data.
+[36mi[39m Specify the column types or set [38;5;251m[48;5;235m[38;5;251m[48;5;235m`show_col_types = FALSE`[48;5;235m[38;5;251m[49m[39m to quiet this message.
+"
+"0","elev"

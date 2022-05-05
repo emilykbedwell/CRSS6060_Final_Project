@@ -1,0 +1,152 @@
+---
+title: "04-25_7.VRN_completed"
+output: html_document
+---
+
+# Setup  
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# Packages
+library(dplyr)
+library(tidyr)
+library(readr)
+library(sf) #vector manipulation
+library(ggplot2)
+library(viridis)
+library(ggthemes)
+
+```
+
+```{r defining map theme}
+mytheme_map <- 
+  theme_map()+
+  theme(legend.position = "right",
+        panel.background = element_rect(fill="gray80",
+                                        color=NA),
+        plot.background = element_rect(fill="gray80",
+                                       color=NA),
+        legend.title = element_text(size=14),
+        legend.text = element_text(size=12))
+
+```
+
+
+```{r yieldic16}
+yieldic16 <- read_sf("../output/Rojas_Yield16_Clean_ip.geojson") %>%
+  mutate(yield16_lbac=ipyield_lbac*.4) %>%
+  dplyr::select(yield16_lbac, geometry)
+
+yieldic16
+
+summary(yieldic16)
+```
+
+
+```{r zone_st}
+zone_st <- read_sf("../data/Rojas_zone_st.geojson") %>%
+  dplyr::select(zone, geometry)
+
+zone_st
+```
+
+# Wrangling  
+```{r Merging yield and zones}
+zone_yield <- zone_st %>%
+  st_join(yieldic16,
+          join = st_equals, 
+          left = T
+  )
+ 
+zone_yield
+```
+# VRN  
+
+```{r vrn calculation }
+vrn <- zone_yield %>%
+  pivot_longer(-c(zone, geometry)) %>%
+  group_by(zone) %>%
+  # Defining yield potential  
+  summarise(yieldpotential=quantile(value,.9)*0.0167) %>%  #yield potential in bu/ac
+  mutate(totalnrate_lbsac=200+ yieldpotential*0.06) %>% 
+  # Adjust total rate in 25% downwards for following peanuts
+  mutate(totalnrate_adj_lbsac=totalnrate_lbsac*0.75) %>%
+  # Calculate pre-plant rate
+  mutate(pp_totalnrate_adj_lbsac=totalnrate_adj_lbsac*.33) %>%
+  # Calculate ~2/3 as portion to be applied in-season (Assuming a single pre-plant rate was applied to both zones)
+  mutate(is_totalnrate_adj_lbsac=totalnrate_adj_lbsac-50) %>%
+  # Calculate product rate when using UAN solution 28% N
+  # UAN 28% has 3 lbs N per gallon of product (see chunk below)
+  mutate(uanrate_galac=is_totalnrate_adj_lbsac/3,
+         uanrate_galac=round(uanrate_galac,1))
+  #mutate(yieldpotential_buac=yieldpotential)
+
+vrn
+```
+
+
+```{r UAN volume to mass of N}
+uan28density_lbsgal <- 10.67
+
+uan28Nconc_pct <- 0.28
+
+uan28_lbsNgal <- uan28density_lbsgal * uan28Nconc_pct
+
+uan28_lbsNgal #~3 lbs N/gal of UAN28%
+
+```
+
+
+```{r total volume of UAN per area}
+vrn %>%
+  mutate(area_m2=st_area(.)) %>%
+  mutate(area_ac=as.numeric(area_m2/4047)) %>%
+  # Will ask for 20% more than recommended to have a bit extra 
+  mutate(uan_gal=(uanrate_galac*area_ac)*1.2) %>%
+  summarise(totaluan_gal=sum(uan_gal),
+            totaluan_gal=round(totaluan_gal,0))
+
+```
+
+# Rx map  
+```{r vrn vector}
+vrn_v <- zone_yield %>%
+  left_join(vrn %>%
+              st_drop_geometry()
+  )
+
+
+vrn_v
+```
+
+```{r vrn plot}
+vrn_v %>%
+  mutate(uanrate_galac=factor(uanrate_galac)) %>%
+  ggplot()+
+  geom_sf(aes(fill=uanrate_galac,
+              color=uanrate_galac))+
+  labs(title="VRN Rx - UAN 28% rate",
+       fill="UAN rate\n(gal/ac)",
+       color="UAN rate\n(gal/ac)")+
+  mytheme_map
+
+ggsave("../output/Rojas_VRN.png",
+      width = 4, 
+       height = 4
+       )  
+
+```
+
+  
+
+```{r exporting}
+vrn_v %>%
+  dplyr::select(zone, uanrate_galac) %>%
+  write_sf("../output/VRN/Rojas_vrn.geojson",
+           delete_dsn = T)
+```
+
+
+
+
+

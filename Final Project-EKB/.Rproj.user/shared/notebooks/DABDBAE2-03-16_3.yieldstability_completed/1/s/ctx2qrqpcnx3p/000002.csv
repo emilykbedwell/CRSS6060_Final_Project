@@ -1,0 +1,16 @@
+"0","yieldic17 <- read_sf(""../03-data/KB2_Yield_2017_clean_ip.geojson"")"
+"0",""
+"0","yieldic17"
+"1","Simple feature collection with 4032 features and 2 fields"
+"1","
+"
+"1","Geometry type: POLYGON
+"
+"1","Dimension:     XY
+"
+"1","Bounding box:  "
+"1","xmin: 712930.9 ymin: 3452174 xmax: 713580.9 ymax: 3453164"
+"1","
+"
+"1","Projected CRS: NAD83(2011) / UTM zone 16N
+"

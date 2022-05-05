@@ -1,0 +1,19 @@
+"0","yield16_w_pf <- yield16_w_sf %>%"
+"0","  st_intersection(buffer)"
+"2","Warning:"
+"2"," attribute variables are assumed to be spatially constant throughout all geometries
+"
+"0","yield16_w_pf"
+"1","Simple feature collection with 58778 features and 7 fields"
+"1","
+"
+"1","Geometry type: POINT
+"
+"1","Dimension:     XY
+"
+"1","Bounding box:  "
+"1","xmin: 731572.4 ymin: 3483323 xmax: 732717.2 ymax: 3484478"
+"1","
+"
+"1","Projected CRS: NAD83(2011) / UTM zone 16N
+"

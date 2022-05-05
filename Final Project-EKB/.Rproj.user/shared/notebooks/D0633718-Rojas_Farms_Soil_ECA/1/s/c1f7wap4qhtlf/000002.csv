@@ -1,0 +1,8 @@
+"0","eca90_map <- ggplot()+"
+"0","  geom_stars(data = eca90_idw_pred)+"
+"0","  scale_fill_viridis_b()+"
+"0","  geom_sf(data=boundary_w, fill=NA)+"
+"0","  labs(fill=""ECa\n0-90 cm\n(dS/m)"")+"
+"0","  mytheme_map"
+"0",""
+"0","eca90_map"

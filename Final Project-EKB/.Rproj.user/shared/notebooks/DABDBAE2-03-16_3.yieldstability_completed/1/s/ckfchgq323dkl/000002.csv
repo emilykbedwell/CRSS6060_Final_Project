@@ -1,0 +1,22 @@
+"0","s_19 <- yieldic19 %>%"
+"0","  mutate(medianyield_lbac=median(ipyield_lbac)) %>%"
+"0","  mutate(snyield=case_when("
+"0","    ipyield_lbac >= medianyield_lbac ~ ""high"","
+"0","    ipyield_lbac < medianyield_lbac ~ ""low"""
+"0","  )) %>%"
+"0","  dplyr::select(snyield_19=snyield, geometry) "
+"0",""
+"0","s_19"
+"1","Simple feature collection with 4032 features and 1 field"
+"1","
+"
+"1","Geometry type: POLYGON
+"
+"1","Dimension:     XY
+"
+"1","Bounding box:  "
+"1","xmin: 712930.9 ymin: 3452174 xmax: 713580.9 ymax: 3453164"
+"1","
+"
+"1","Projected CRS: NAD83(2011) / UTM zone 16N
+"

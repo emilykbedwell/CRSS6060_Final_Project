@@ -1,0 +1,16 @@
+"0","zone_df %>%"
+"0","  group_by(cluster) %>%"
+"0","  tally()"
+"1","Simple feature collection with 2 features and 2 fields"
+"1","
+"
+"1","Geometry type: MULTIPOLYGON
+"
+"1","Dimension:     XY
+"
+"1","Bounding box:  "
+"1","xmin: 712950.9 ymin: 3452184 xmax: 713560.9 ymax: 3453154"
+"1","
+"
+"1","Projected CRS: NAD83(2011) / UTM zone 16N
+"

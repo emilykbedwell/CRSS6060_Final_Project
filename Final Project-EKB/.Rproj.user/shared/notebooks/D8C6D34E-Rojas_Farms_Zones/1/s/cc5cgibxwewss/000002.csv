@@ -1,0 +1,19 @@
+"0","all_v <- terrain_v %>%"
+"0","  st_join(eca_v, "
+"0","          join = st_equals, "
+"0","          left = T) "
+"0",""
+"0","all_v"
+"1","Simple feature collection with 10429 features and 7 fields"
+"1","
+"
+"1","Geometry type: POLYGON
+"
+"1","Dimension:     XY
+"
+"1","Bounding box:  "
+"1","xmin: 731534.9 ymin: 3483286 xmax: 732754.9 ymax: 3484516"
+"1","
+"
+"1","Projected CRS: NAD83(2011) / UTM zone 16N
+"

@@ -1,0 +1,16 @@
+"0","st_all <- read_sf(""../data/Rojas_yield_st_16.geojson"")"
+"0",""
+"0","(st_all)"
+"1","Simple feature collection with 10429 features and 2 fields"
+"1","
+"
+"1","Geometry type: POLYGON
+"
+"1","Dimension:     XY
+"
+"1","Bounding box:  "
+"1","xmin: 731534.9 ymin: 3483286 xmax: 732754.9 ymax: 3484516"
+"1","
+"
+"1","Projected CRS: NAD83(2011) / UTM zone 16N
+"

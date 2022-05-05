@@ -1,0 +1,6 @@
+"0","all_v_n <- all_v %>%"
+"0","  drop_na() %>%"
+"0","  dplyr::select(-flowdir, -geometry) "
+"0",""
+"0",""
+"0","all_v_n"

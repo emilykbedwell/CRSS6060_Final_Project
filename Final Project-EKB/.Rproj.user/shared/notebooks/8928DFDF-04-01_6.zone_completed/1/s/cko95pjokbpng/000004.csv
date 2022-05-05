@@ -1,0 +1,17 @@
+"0",""
+"0","ggsave(""../output/zones.png"", "
+"0","       width = 3, "
+"0","       height = 4)"
+"2","Warning in png_dev(..., res = dpi, units = ""in"") :"
+"2","
+ "
+"2"," unable to open file '../output/zones.png' for writing
+"
+"2","Warning in png_dev(..., res = dpi, units = ""in"") :"
+"2","
+ "
+"2"," opening device failed
+"
+"2","Error in png_dev(..., res = dpi, units = ""in"") : 
+  unable to start png() device
+"

@@ -1,0 +1,5 @@
+"0","# Total error x k"
+"0","fviz_nbclust(all_v_n, "
+"0","             method = ""wss"","
+"0","             k.max = 10,"
+"0","             FUNcluster = kmeans) #3 to 5"

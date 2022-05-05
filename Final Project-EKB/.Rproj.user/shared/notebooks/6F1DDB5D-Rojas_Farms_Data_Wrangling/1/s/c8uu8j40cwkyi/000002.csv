@@ -1,0 +1,6 @@
+"0","# Rename to include units"
+"0","yield16_w3 <- rename(yield16_w2,"
+"0","                     yield_lbac=dry_yield,"
+"0","                     speed_mph=speed_mph)"
+"0",""
+"0","yield16_w3"

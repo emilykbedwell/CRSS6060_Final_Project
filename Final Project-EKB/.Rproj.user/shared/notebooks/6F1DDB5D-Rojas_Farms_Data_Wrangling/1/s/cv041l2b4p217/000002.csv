@@ -1,0 +1,8 @@
+"0","ggplot()+"
+"0","  geom_density(data=yield16_w, "
+"0","               aes(x=yield_lbac), "
+"0","               fill=""blue"", alpha=.5)+"
+"0","  geom_density(data=yield16_w_pf, "
+"0","               aes(x=yield_lbac), "
+"0","               fill=""yellow"", alpha=.5)"
+"0",""

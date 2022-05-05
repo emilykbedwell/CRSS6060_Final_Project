@@ -1,0 +1,8 @@
+"0","zone_s %>%"
+"0","  ggplot()+"
+"0","  geom_sf(aes(fill=cluster_s), color=NA)+"
+"0","  geom_sf(data = boundary_w, fill=NA)+"
+"0","  scale_fill_colorblind()+"
+"0","  labs(title=""Smoothed zones, 5x5, mean"")+"
+"0","  theme_map()+"
+"0","  theme(plot.title = element_text(color=""blue""))"

@@ -1,0 +1,17 @@
+"0","st_all %>%"
+"0","  group_by(snyield) %>%"
+"0","  tally() %>%"
+"0","  mutate(prop=(n/4032)*100)"
+"1","Simple feature collection with 2 features and 3 fields"
+"1","
+"
+"1","Geometry type: MULTIPOLYGON
+"
+"1","Dimension:     XY
+"
+"1","Bounding box:  "
+"1","xmin: 731534.9 ymin: 3483286 xmax: 732754.9 ymax: 3484516"
+"1","
+"
+"1","Projected CRS: NAD83(2011) / UTM zone 16N
+"

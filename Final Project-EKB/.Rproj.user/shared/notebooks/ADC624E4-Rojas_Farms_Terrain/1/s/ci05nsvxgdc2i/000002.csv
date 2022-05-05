@@ -1,0 +1,8 @@
+"0","aspect_map <- ggplot()+"
+"0","  geom_stars(data = aspect)+"
+"0","  geom_sf(data=boundary_w, fill=NA)+"
+"0","  scale_fill_gradient(low=""black"", high=""white"")+"
+"0","  labs(fill=""Aspect\n(rad.)"")+"
+"0","  mytheme_map"
+"0",""
+"0","aspect_map"

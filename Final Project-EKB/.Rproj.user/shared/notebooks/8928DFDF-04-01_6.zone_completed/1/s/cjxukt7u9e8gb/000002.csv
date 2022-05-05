@@ -1,0 +1,7 @@
+"0","sf <- read_sf(""..//03-data/st_all.geojson"")
+
+sf
+"
+"2","'read' is not recognized as an internal or external command,
+operable program or batch file.
+"

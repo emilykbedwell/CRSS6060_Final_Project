@@ -1,0 +1,441 @@
+---
+title: "1.wrangling-yield"
+output: html_document
+---
+
+
+# Setup
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+#loading packages (add to the list as we need) 
+library(readr)
+library(janitor)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(sf)
+
+#install.packages("knitr")
+#install.packages("viridis")
+
+library(viridis)
+```
+
+```{r reading data}
+yield16 <- read_csv("../data/Deer Run1 2016 Yield.csv")
+
+yield16
+```
+# Exploratory data analysis
+```{r class}
+class(yield16)
+```
+
+```{r summary}
+summary(yield16) 
+```
+
+
+```{r yield distribution - density plot}
+ggplot(yield16, aes(x=DryYield))+
+  geom_density()+
+  geom_rug()
+```
+
+```{r speed distribution - density plot}
+ggplot(yield16, aes(x=speed_mph))+
+  geom_density()+
+  geom_rug()
+
+```
+
+```{r yield map}
+ggplot(yield16, aes(x=Long,
+                    y=Lat))+
+  geom_point(aes(color=DryYield))+
+  scale_color_viridis()
+  scale_color_gradient(low="red", high = "green")
+
+```
+
+```{r yield restricted map}
+ggplot(filter(yield16, DryYield<5000) , aes(x=Long,
+                                             y=Lat))+
+  geom_point(aes(color=DryYield))+
+  scale_color_viridis()
+  scale_color_gradient(low="red", high = "green")
+
+```
+
+```{r yield x speed}
+ggplot(yield16, aes(x=speed_mph, 
+                    y=DryYield))+
+  geom_point()+
+  geom_smooth()
+
+```
+
+
+```{r data needs}
+yield16
+
+```
+
+
+# Wrangling  
+```{r yield16_w1 - clean_names}
+# Standardizing names
+yield16_w1 <- clean_names(yield16)
+
+
+yield16_w1
+```
+
+```{r yield16_w2 - select}
+# Selecting needed columns
+yield16_w2 <-   dplyr::select(yield16_w1,
+                              speed_mph,
+                              dry_yield,
+                              lat,
+                             long)
+
+
+yield16_w2
+```
+
+
+```{r yield16_w3 - rename}
+# Rename to include units
+yield16_w3 <- rename(yield16_w2,
+                     yield_lbac=dry_yield,
+                     speed_mph=speed_mph)
+
+yield16_w3
+
+```
+
+```{r yield16_w4 - mutate}
+# Creating yield and speed in SI
+yield16_w4 <- mutate(yield16_w3,
+                     speed_kmh=speed_mph*1.60934,
+                     yield_kgha=yield_lbac*0.453592/0.404686
+)
+
+yield16_w4
+
+
+```
+
+```{r yield16_w5 - st_as_sf}
+# Creating spatial object
+yield16_w5 <- st_as_sf(yield16_w4, 
+                       coords = c("long", "lat"))
+
+yield16_w5
+
+class(yield16_w5)
+```
+
+
+
+```{r yield16_w6 - st_set_crs}
+# Assigning native coordinate reference system EPSG identifier
+yield16_w6 <- st_set_crs(yield16_w5,
+                         value = 4326) #WGS84
+
+yield16_w6
+```
+
+
+
+```{r yield16_w7 - st_transform}
+# Transforming from unprojected to projected (UTM NAD83 16 n)
+yield16_w7 <- st_transform(yield16_w6,
+                           crs = 6345)
+
+yield16_w7
+```
+ 
+
+```{r yield16_w - piping it all}
+yield16_w <- yield16 %>% 
+  clean_names() %>%
+  dplyr::select(speed_mph,
+                dry_yield,
+                lat,
+               long) %>%
+  rename(speed_mph=speed_mph,
+         yield_lbac=dry_yield) %>%
+  mutate(yield_kgha=yield_lbac*0.453592/0.404686,
+         speed_kmh=speed_mph*1.60934, yield_buac=yield_lbac*0.0167) %>%
+  st_as_sf(coords = c("long", "lat")) %>%
+  st_set_crs(value = 4326) %>%
+  st_transform(crs = 6345)
+
+yield16_w
+
+
+```
+```{r raw SD}
+
+print(sd(yield16_w$yield_buac))
+
+```
+
+
+# Yield Editor  
+```{r yield map raw}
+yieldmap_raw <- ggplot(yield16_w)+
+  geom_sf(aes(color=yield_lbac), size=.1)+
+  scale_color_viridis()
+  scale_color_gradient(low="red", high = "green")
+
+yieldmap_raw
+```
+
+
+
+## Min/max yield
+```{r min max yield - density}
+ggplot(data=yield16_w, aes(x=yield_lbac))+
+  geom_density()+
+  geom_rug()
+
+```
+
+```{r yield summary}
+summary(yield16_w$yield_buac)
+```
+
+
+```{r yield quantiles}
+lowq_yield <- quantile(yield16_w$yield_lbac, 0.1)
+lowq_yield
+
+upq_yield <- quantile(yield16_w$yield_lbac, 0.99)
+upq_yield
+
+iqr <- upq_yield - lowq_yield
+iqr
+
+miny <- lowq_yield - (0.25*iqr)
+miny
+
+maxy <- upq_yield + (0.25*iqr)
+maxy
+```
+
+```{r min max yield annotated- density}
+ggplot()+
+  geom_density(data=yield16_w, aes(x=yield_lbac))+
+  geom_vline(xintercept = lowq_yield, color="red", linetype=2)+
+  geom_vline(xintercept = upq_yield, color="blue", linetype=2)+
+  geom_vline(xintercept = miny, color="red", linetype=1)+
+  geom_vline(xintercept = maxy, color="blue", linetype=1)+
+  annotate(geom="rect",
+           ymin=0, ymax=Inf,
+           xmin=miny, xmax=maxy,
+           alpha=.6, 
+           fill="green")
+
+```
+
+
+```{r yield filtering}
+yield16_w_yf <- yield16_w %>%
+  filter(yield_lbac > miny & yield_lbac < maxy)
+
+yield16_w_yf
+```
+Before filtering we had a total of 73,574 data rows.  
+How many rows now after filtering?  73,190
+
+
+```{r yield filtered - stats}
+summary(yield16_w_yf$yield_buac) 
+
+print(sd(yield16_w_yf$yield_buac))
+```
+
+
+## Min/max speed  
+```{r min max speed - density}
+ggplot(data=yield16_w, aes(x=speed_mph))+
+  geom_density()+
+  geom_rug()
+
+```
+
+```{r speed summary}
+summary(yield16_w$speed_mph)
+```
+
+
+```{r speed quantiles}
+lowq_speed <- quantile(yield16_w$speed_mph, 0.08)
+lowq_speed
+
+upq_speed <- quantile(yield16_w$speed_mph, 0.99)
+upq_speed
+
+iqr <- upq_speed - lowq_speed
+iqr
+
+minv <- lowq_speed - (0.18*iqr)
+minv
+
+maxv <- upq_speed + (0.18*iqr)
+maxv
+```
+
+
+```{r min max speed annotated- density}
+ggplot()+
+  geom_density(data=yield16_w, aes(x=speed_mph))+
+  geom_vline(xintercept = lowq_speed, color="red", linetype=2)+
+  geom_vline(xintercept = upq_speed, color="blue", linetype=2)+
+  geom_vline(xintercept = minv, color="red", linetype=1)+
+  geom_vline(xintercept = maxv, color="blue", linetype=1)+
+  annotate(geom="rect",
+           ymin=0, ymax=Inf,
+           xmin=minv, xmax=maxv,
+           alpha=.6, 
+           fill="green")
+
+
+```
+
+```{r speed filtering}
+yield16_w_sf <- yield16_w_yf %>%
+  filter(speed_mph > minv & speed_mph < maxv)
+
+yield16_w_sf
+```
+Before filtering we had a total of 73,190 data rows.  
+How many rows now after filtering?  68,358
+
+
+```{r speed filtered - stats}
+summary(yield16_w_sf$speed_mph) 
+```
+
+# Position  
+
+```{r importing boundary}
+
+boundary <- read_sf("..//data/boundary/DR1_boundary.geojson")  
+
+boundary
+
+```
+
+```{r boundary_w}
+boundary_w <- boundary %>%
+  st_transform(crs = 6345)
+  
+boundary_w
+```
+
+```{r boundary_w plot}
+yieldmap_raw+ 
+  geom_sf(data=boundary_w, fill=NA)
+
+```
+
+Let's create a negative buffer of 35-m.  
+```{r buffer}
+buffer <- boundary_w %>%
+  st_buffer(dist = -35)
+
+buffer
+```
+
+```{r buffer plot}
+yieldmap_raw+ 
+  geom_sf(data=boundary_w, fill=NA)+
+  geom_sf(data=buffer, color="orange", fill=NA)
+
+```
+
+```{r position filtering}
+yield16_w_pf <- yield16_w_sf %>%
+  st_intersection(buffer)
+
+yield16_w_pf
+```
+Before filtering we had a total of 68,358 data rows.  
+How many rows now after filtering? 58,778 
+
+```{r position summary}
+summary(yield16_w_pf$yield_lbac)
+```
+
+# Raw vs Cleaned data  
+## Summary statistics
+```{r raw summary}
+yield16_w %>%
+  summarise(n=length(yield_buac),
+            min=min(yield_buac),
+            mean=mean(yield_buac),
+            max=max(yield_buac),
+            sd=sd(yield_buac),
+            cv=(sd/mean)*100
+            )
+```
+
+```{r filtered summary}
+yield16_w_pf %>%
+  summarise(n=length(yield_buac),
+            min=min(yield_buac),
+            mean=mean(yield_buac),
+            max=max(yield_buac),
+            sd=sd(yield_buac),
+            cv=(sd/mean)*100
+            )
+```
+
+## Density plot  
+```{r raw vs clean density}
+ggplot()+
+  geom_density(data=yield16_w, 
+               aes(x=yield_lbac), 
+               fill="blue", alpha=.5)+
+  geom_density(data=yield16_w_pf, 
+               aes(x=yield_lbac), 
+               fill="yellow", alpha=.5)
+
+```
+
+# Map  
+```{r raw map}
+yieldmap_raw
+```
+
+```{r cleaned map}
+yieldmap_clean <- ggplot(yield16_w_pf)+
+  geom_sf(aes(color=yield_lbac), size=.1)+
+  scale_color_viridis()
+
+yieldmap_clean
+```
+
+```{r side-by-side maps}
+#install.packages("patchwork")
+library(patchwork)
+
+yieldmap_raw + yieldmap_clean
+
+# saving to file
+ggsave("../output/rawvsclean16.png", width = 10, height = 6)
+```
+
+# Exporting cleaned version  
+```{r exporting clean}
+write_sf(yield16_w_pf,"../output/Rojas_Yield16_Clean.geojson")
+```
+
+
+
+
+

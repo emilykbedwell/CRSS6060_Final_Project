@@ -1,0 +1,17 @@
+"0","yield16_w_yf <- yield16_w %>%"
+"0","  filter(yield_lbac > miny & yield_lbac < maxy)"
+"0",""
+"0","yield16_w_yf"
+"1","Simple feature collection with 73190 features and 5 fields"
+"1","
+"
+"1","Geometry type: POINT
+"
+"1","Dimension:     XY
+"
+"1","Bounding box:  "
+"1","xmin: 731562.6 ymin: 3483311 xmax: 732729.7 ymax: 3484504"
+"1","
+"
+"1","Projected CRS: NAD83(2011) / UTM zone 16N
+"

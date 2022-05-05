@@ -1,0 +1,18 @@
+"0","# Creating spatial object"
+"0","yield16_w5 <- st_as_sf(yield16_w4, "
+"0","                       coords = c(""long"", ""lat""))"
+"0",""
+"0","yield16_w5"
+"1","Simple feature collection with 73574 features and 4 fields"
+"1","
+"
+"1","Geometry type: POINT
+"
+"1","Dimension:     XY
+"
+"1","Bounding box:  "
+"1","xmin: -84.56277 ymin: 31.46129 xmax: -84.5505 ymax: 31.47205"
+"1","
+"
+"1","CRS:           NA
+"

@@ -1,0 +1,36 @@
+"0","# grid in vector format"
+"0","grid_v <- st_make_grid(boundary_w, "
+"0","                     cellsize = 10) "
+"0",""
+"0","grid_v"
+"1","Geometry set for 15006 features "
+"1","
+"
+"1","Geometry type: POLYGON
+"
+"1","Dimension:     XY
+"
+"1","Bounding box:  "
+"1","xmin: 731534.9 ymin: 3483286 xmax: 732754.9 ymax: 3484516"
+"1","
+"
+"1","Projected CRS: NAD83(2011) / UTM zone 16N
+"
+"1","First 5 geometries:
+"
+"2","POLYGON ((731534.9 3483286, 731544.9 3483286, 7...
+"
+"2","POLYGON ((731544.9 3483286, 731554.9 3483286, 7...
+"
+"2","POLYGON ((731554.9 3483286, 731564.9 3483286, 7...
+"
+"2","POLYGON ((731564.9 3483286, 731574.9 3483286, 7...
+"
+"2","POLYGON ((731574.9 3483286, 731584.9 3483286, 7...
+"
+"0","class(grid_v)"
+"1","[1]"
+"1"," ""sfc_POLYGON"""
+"1"," ""sfc""        "
+"1","
+"

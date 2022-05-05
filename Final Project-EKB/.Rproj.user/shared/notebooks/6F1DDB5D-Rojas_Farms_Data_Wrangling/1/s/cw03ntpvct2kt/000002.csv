@@ -1,0 +1,14 @@
+"0","yield16 <- read_csv(""../data/Deer Run1 2016 Yield.csv"")"
+"1","[1mRows: [22m[34m73574[39m [1mColumns: [22m[34m35[39m
+"
+"1","[36m--[39m [1mColumn specification[22m [36m-----------------------------------------------------------------------------------------------------------------[39m
+[1mDelimiter:[22m "",""
+[31mchr[39m (15): Time, WindDire, SkyCondi, SoilMois, Record01, LoadName, LoadDest, Operator, Machine, Implement1, Client, Farm, Field, Task,...
+[32mdbl[39m (19): Long, Lat, Heading, Distance, Elevatio, Width, Relative, AirTempe, WindSpee, SoilTemp, FuelRate, Product0, HarvestM, YieldM...
+[33mlgl[39m  (1): DelStatus
+"
+"1","
+[36mi[39m Use [38;5;251m[48;5;235m[38;5;251m[48;5;235m`spec()`[48;5;235m[38;5;251m[49m[39m to retrieve the full column specification for this data.
+[36mi[39m Specify the column types or set [38;5;251m[48;5;235m[38;5;251m[48;5;235m`show_col_types = FALSE`[48;5;235m[38;5;251m[49m[39m to quiet this message.
+"
+"0","yield16"

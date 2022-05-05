@@ -1,0 +1,9 @@
+"0",""
+"0","ggsave(""../data/Rojas_yield_st_16-1.geojson"","
+"0","       width = 6, height = 4)"
+"1","[1m[33mError[39m in [38;5;255m[38;5;251m[48;5;235m`plot_dev()`[49m[38;5;255m[39m:[22m
+[33m![39m Unknown graphics device 'geojson'
+Backtrace:
+[90m 1. [39mggplot2::ggsave(...)
+[90m 2. [39mggplot2:::plot_dev(device, filename, dpi = dpi)
+"

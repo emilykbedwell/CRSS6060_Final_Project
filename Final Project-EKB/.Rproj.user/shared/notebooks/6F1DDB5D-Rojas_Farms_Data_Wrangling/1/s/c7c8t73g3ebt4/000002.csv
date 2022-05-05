@@ -1,0 +1,18 @@
+"0","# Transforming from unprojected to projected (UTM NAD83 16 n)"
+"0","yield16_w7 <- st_transform(yield16_w6,"
+"0","                           crs = 6345)"
+"0",""
+"0","yield16_w7"
+"1","Simple feature collection with 73574 features and 4 fields"
+"1","
+"
+"1","Geometry type: POINT
+"
+"1","Dimension:     XY
+"
+"1","Bounding box:  "
+"1","xmin: 731562.6 ymin: 3483311 xmax: 732729.7 ymax: 3484504"
+"1","
+"
+"1","Projected CRS: NAD83(2011) / UTM zone 16N
+"

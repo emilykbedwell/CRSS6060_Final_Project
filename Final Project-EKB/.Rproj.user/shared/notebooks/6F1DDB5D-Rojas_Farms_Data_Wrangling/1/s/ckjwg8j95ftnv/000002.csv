@@ -1,0 +1,17 @@
+"0","boundary_w <- boundary %>%"
+"0","  st_transform(crs = 6345)"
+"0","  "
+"0","boundary_w"
+"1","Simple feature collection with 1 feature and 2 fields"
+"1","
+"
+"1","Geometry type: MULTIPOLYGON
+"
+"1","Dimension:     XY
+"
+"1","Bounding box:  "
+"1","xmin: 731534.9 ymin: 3483286 xmax: 732753.4 ymax: 3484514"
+"1","
+"
+"1","Projected CRS: NAD83(2011) / UTM zone 16N
+"

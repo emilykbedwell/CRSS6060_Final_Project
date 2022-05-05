@@ -1,0 +1,18 @@
+"0","yieldic16 <- read_sf(""../output/Rojas_Yield16_Clean_ip.geojson"") %>%"
+"0","  mutate(yield16_lbac=ipyield_lbac*.4) %>%"
+"0","  dplyr::select(yield16_lbac, geometry)"
+"0",""
+"0","yieldic16"
+"1","Simple feature collection with 10429 features and 1 field"
+"1","
+"
+"1","Geometry type: POLYGON
+"
+"1","Dimension:     XY
+"
+"1","Bounding box:  "
+"1","xmin: 731534.9 ymin: 3483286 xmax: 732754.9 ymax: 3484516"
+"1","
+"
+"1","Projected CRS: NAD83(2011) / UTM zone 16N
+"

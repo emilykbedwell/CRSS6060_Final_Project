@@ -1,0 +1,21 @@
+"0","yield16_w %>%"
+"0","  summarise(n=length(yield_buac),"
+"0","            min=min(yield_buac),"
+"0","            mean=mean(yield_buac),"
+"0","            max=max(yield_buac),"
+"0","            sd=sd(yield_buac),"
+"0","            cv=(sd/mean)*100"
+"0","            )"
+"1","Simple feature collection with 1 feature and 6 fields"
+"1","
+"
+"1","Geometry type: MULTIPOINT
+"
+"1","Dimension:     XY
+"
+"1","Bounding box:  "
+"1","xmin: 731562.6 ymin: 3483311 xmax: 732729.7 ymax: 3484504"
+"1","
+"
+"1","Projected CRS: NAD83(2011) / UTM zone 16N
+"

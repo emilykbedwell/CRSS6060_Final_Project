@@ -1,0 +1,333 @@
+---
+title: "04-01_6.zone"
+output: html_document
+---
+ 
+
+# Setup  
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+#install.packages("factoextra")
+#install.packages("NbClust")
+#install.packages("ggpubr")
+
+# Packages
+library(dplyr)
+library(tidyr)
+library(readr)
+library(sf) #vector manipulation
+library(ggplot2)
+library(viridis)
+library(ggthemes)
+library(patchwork) #combining multiple plots
+library(factoextra)
+library(NbClust)
+library(ggpubr)
+
+```
+
+# Data import  
+
+```{r terrain_v}
+terrain_v <- read_sf("../data/Rojas_terrain_v.geojson") 
+
+terrain_v
+```
+
+```{r eca_v }
+eca_v <- read_sf("../data/Rojas_eca_v.geojson")
+
+eca_v
+```
+```{r boundary_w}
+boundary_w <- read_sf("../data/boundary/DR1_boundary.geojson") %>%
+  st_transform(crs = 6345)
+
+boundary_w
+```
+
+
+# Joining all data together  
+```{r all_v}
+all_v <- terrain_v %>%
+  st_join(eca_v, 
+          join = st_equals, 
+          left = T) 
+
+all_v
+```
+
+```{r summary}
+summary(all_v)
+```
+
+
+```{r @ all_v_n}
+all_v_n <- all_v %>%
+  drop_na() %>%
+  dplyr::select(-flowdir, -geometry) 
+
+
+all_v_n
+```
+
+## Defining k  
+
+```{r kmeans initial model }
+mod_km <- kmeans(all_v_n, 
+                 centers = 4,
+                 nstart = 10) 
+
+mod_km
+```
+
+
+Let's explore a few of these metrics:
+```{r finding k - wss method}
+# Total error x k
+fviz_nbclust(all_v_n, 
+             method = "wss",
+             k.max = 10,
+             FUNcluster = kmeans) #3 to 5
+```
+
+```{r finding k - silhouette method}
+# Silhouette width
+fviz_nbclust(all_v_n, 
+             method = "s",
+             k.max = 10,
+             FUNcluster = kmeans) #2
+
+```
+
+```{r finding k - multi-metric vote}
+# Voting from 26 indices  
+bestk <- NbClust(all_v_n,
+                 distance = "euclidean", 
+                 method ="kmeans", 
+                 index= "all",
+                 min.nc = 2, 
+                 max.nc = 6)
+
+fviz_nbclust(bestk) # 2 and 3 on std and raw
+
+```
+
+
+Let's go with 2 clusters:
+```{r @ mod_km2 }
+mod_km2 <- kmeans(all_v_n, 
+                  centers = 2,
+                  nstart = 10)
+
+mod_km2
+```
+
+# Exploring clusters  
+ 
+```{r @ zone_df }
+zone_df <- all_v_n %>%
+  # Adding cluster membership column
+  mutate(cluster=mod_km2$cluster,
+         cluster=factor(cluster)) %>%
+  # Adding geometry
+  bind_cols(all_v %>%
+              drop_na() %>%
+              dplyr::select(geometry)) %>%
+  st_as_sf()
+
+zone_df
+
+zone_df %>%
+  group_by(cluster) %>%
+  tally()
+
+```
+
+
+```{r cluster map}
+zone_df %>%
+  ggplot()+
+  geom_sf(aes(fill=cluster), color=NA)+
+  geom_sf(data = boundary_w, fill=NA)+
+  scale_fill_colorblind()+
+  labs(title = "Unsmoothed zones")+
+  theme_map()+
+  theme(plot.title = element_text(color="blue"))
+
+ggsave("../output/Rojas_zones.png", 
+       width = 3, 
+       height = 4)
+
+```
+
+# Smoothing zones  
+```{r what is a focal window?}
+knitr::include_graphics("https://geocompr.robinlovelace.net/figures/04_focal_example.png")
+
+```
+
+```{r grid_r}
+library(stars)
+# grid in vector format
+grid_r <-  boundary_w %>%
+  st_make_grid(cellsize = 10) %>%
+  st_as_sf() %>%
+  st_rasterize(dx=10, dy=10) %>%
+  st_crop(boundary_w)
+```
+
+
+```{r smoothing as raster}
+library(starsExtra)
+library(gstat)
+
+zone_s <- zone_df %>%
+  dplyr::select(cluster) %>%
+  # Transforming from polygon to point
+  st_cast("POINT") %>%
+  # Transforming from geometry to xy (needed by the focal function)
+  st_sfc2xy() %>%
+  # Transforming from point (vector) to raster
+  st_as_stars() %>%
+  # Applying focal filter
+  focal2(w = matrix(1,5,5),
+         fun = "mean") %>%
+  # Transforming from raster back to vector
+  st_as_sf() %>%
+  # Interpolating to fill to boundary
+  gstat(formula = cluster ~ 1,  
+                       data = .) %>%
+  predict(grid_r) %>%
+  # Transforming from raster back to vector
+  st_as_sf() %>%
+  # Adjusting cluster id from numeric to factor
+  mutate(cluster_s=ifelse(var1.pred<1.5,"1","2"),
+         cluster_s=factor(cluster_s)) %>%
+  dplyr::select(cluster_s) 
+
+zone_s
+```
+
+```{r smoothed plot}
+zone_s %>%
+  ggplot()+
+  geom_sf(aes(fill=cluster_s), color=NA)+
+  geom_sf(data = boundary_w, fill=NA)+
+  scale_fill_colorblind()+
+  labs(title="Smoothed zones, 5x5, mean")+
+  theme_map()+
+  theme(plot.title = element_text(color="blue"))
+
+ggsave("../output/Rojas_zonesmoothed_5x5_mean.png",
+       width = 3, 
+       height = 4)
+```
+
+```{r merging smoothed zones to data}
+zone_s_df <- zone_s %>%
+  st_join(zone_df, 
+          join = st_equals, 
+          left = T) %>%
+  drop_na() 
+
+zone_s_df
+```
+
+
+```{r cluster x variable boxplots}
+zone_s_df %>%
+  pivot_longer(-c(cluster, cluster_s, geometry)) %>%
+  ggplot(aes(x=cluster_s, y=value, color=cluster_s))+
+  geom_boxplot(show.legend = F)+
+  scale_color_colorblind()+
+  facet_wrap(~name, scales="free_y", ncol=3)+
+  stat_compare_means(label = "p.format",
+                     hjust = -.1,
+                     vjust=1)+
+  theme(legend.position = "none")
+```
+
+
+```{r yield stability data}
+st_all <- read_sf("../data/Rojas_yield_st_16.geojson")
+
+(st_all)
+```
+
+```{r joining st_all and zone_s_df}
+zone_st <- zone_s_df %>%
+  st_join(st_all,
+          join = st_equals, 
+          left = T
+  )
+zone_st
+```
+
+
+```{r contingency table for 2016 yield}
+zone_st %>%
+  st_drop_geometry() %>%
+  group_by(cluster_s) %>%
+  mutate(N=length(cluster_s)) %>%
+  group_by(cluster_s, snyield, N) %>%
+  tally() %>%
+  mutate(prop=(n/N)*100) %>%
+  mutate(prop=round(prop,0)) %>%
+  ggplot(aes(x=snyield, y=prop, fill=snyield))+
+  geom_col(position="dodge", color="black")+
+  scale_fill_viridis_d(option="E")+
+  facet_grid(~cluster_s)+
+  geom_text(aes(label=paste0(prop,"%"), y=prop+5))+
+  theme(legend.position = "none")
+
+```
+```{r contingency table for yield stability}
+
+zone_st %>%
+  st_drop_geometry() %>%
+  group_by(cluster_s) %>%
+  mutate(N=length(cluster_s)) %>%
+  group_by(cluster_s, snyield, N) %>%
+  tally() %>%
+  mutate(prop=(n/N)*100) %>%
+  mutate(prop=round(prop,0)) %>%
+  mutate(cluster_s=paste0("Cluster ", cluster_s)) %>%
+  ggplot(aes(x=snyield, y=prop, fill=snyield))+
+  geom_col(position="dodge", color="black")+
+  scale_fill_viridis_d(option="C")+
+  facet_grid(~cluster_s)+
+  geom_text(aes(label=paste0(prop,"%"), y=prop+5))+
+  labs(y="Zone area within each class (%)",
+       x="Spatial-temporal stability class")+
+  theme(legend.position = "none")
+
+ggsave("../output/Rojas_zonevalidation_yield.png",
+       width = 5,
+       height = 3
+       )
+
+```
+
+
+
+# Exporting clusters  
+```{r exporting clusters}
+zone_st %>%
+  mutate(zone=ifelse(cluster_s=="1", "low", "high")) %>%
+  write_sf("../data/Rojas_zone_st.geojson",
+           delete_dsn = T) 
+```
+
+
+
+
+
+
+
+
+
+
+
+

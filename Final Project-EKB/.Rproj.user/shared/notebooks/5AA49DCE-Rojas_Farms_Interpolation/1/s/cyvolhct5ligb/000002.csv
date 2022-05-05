@@ -1,0 +1,3 @@
+"0","write_sf(idw_pred_v,"
+"0","         ""../output/Rojas_Yield16_Clean_ip.geojson"","
+"0","         delete_dsn = T)"
